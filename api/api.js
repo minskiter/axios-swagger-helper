@@ -31,18 +31,50 @@ export class Blog {
  * @param update_time {string} 
  * @param tag {number} 
  * @param comments {Array} 
+ * @param commentCount {number} 
  * @returns Promise {}
  * @author Alever Lai
  */
-static async SendBlog(id,title,contain,student,viewed,comment,publish_time,update_time,tag,comments,callback){
+static async SendBlog(id,title,contain,student,viewed,comment,publish_time,update_time,tag,comments,commentCount,callback){
   return await new Promise((resolve,reject)=>{
     axios({
       method:'post',
       url:'/Blog/SendBlog',
-      data:{id,title,contain,student,viewed,comment,publish_time,update_time,tag,comments,},
+      data:{id,title,contain,student,viewed,comment,publish_time,update_time,tag,comments,commentCount,},
       params:{},
       headers:{
-        "Content-type":"application/x-www-form-urlencoded; charset=utf-8;"
+        "Content-Type":"application/x-www-form-urlencoded; charset=utf-8;"
+      }
+    })
+    .then(res=>{
+      resolve(res.data)
+      if (callback!=null){
+        callback(res.data)
+      }
+    }).catch(err=>{
+      reject(err)
+    })
+  })
+}
+ 
+
+
+/**
+ * @summary 获得帖子的数量
+ * @param callback {function|null} 回调函数
+ * @param tag {number} tag为类别
+ * @returns Promise {}
+ * @author Alever Lai
+ */
+static async GetBlogCount(tag,callback){
+  return await new Promise((resolve,reject)=>{
+    axios({
+      method:'get',
+      url:'/Blog/GetBlogCount',
+      data:{tag,},
+      params:{tag,},
+      headers:{
+        "Content-Type":"application/x-www-form-urlencoded; charset=utf-8;"
       }
     })
     .then(res=>{
@@ -61,7 +93,7 @@ static async SendBlog(id,title,contain,student,viewed,comment,publish_time,updat
 /**
  * @summary 获取帖子详情
  * @param callback {function|null} 回调函数
- * @param id {string} 
+ * @param id {string} blog的id
  * @returns Promise {}
  * @author Alever Lai
  */
@@ -73,7 +105,7 @@ static async GetBlog(id,callback){
       data:{id,},
       params:{id,},
       headers:{
-        "Content-type":"application/x-www-form-urlencoded; charset=utf-8;"
+        "Content-Type":"application/x-www-form-urlencoded; charset=utf-8;"
       }
     })
     .then(res=>{
@@ -92,7 +124,7 @@ static async GetBlog(id,callback){
 /**
  * @summary 删除我的帖子
  * @param callback {function|null} 回调函数
- * @param id {string} 
+ * @param id {string} blog的id
  * @returns Promise {}
  * @author Alever Lai
  */
@@ -104,7 +136,7 @@ static async DeleteBlog(id,callback){
       data:{id,},
       params:{id,},
       headers:{
-        "Content-type":"application/x-www-form-urlencoded; charset=utf-8;"
+        "Content-Type":"application/x-www-form-urlencoded; charset=utf-8;"
       }
     })
     .then(res=>{
@@ -123,10 +155,10 @@ static async DeleteBlog(id,callback){
 /**
  * @summary 修改我的帖子
  * @param callback {function|null} 回调函数
- * @param id {string} 
- * @param title {string} 
- * @param contain {string} 
- * @param tag {number} 
+ * @param id {string} blog的id
+ * @param title {string} 标题
+ * @param contain {string} 内容
+ * @param tag {number} 类别
  * @returns Promise {}
  * @author Alever Lai
  */
@@ -138,7 +170,7 @@ static async ReviseBlog(id,title,contain,tag,callback){
       data:{id,title,contain,tag,},
       params:{},
       headers:{
-        "Content-type":"application/x-www-form-urlencoded; charset=utf-8;"
+        "Content-Type":"application/x-www-form-urlencoded; charset=utf-8;"
       }
     })
     .then(res=>{
@@ -157,10 +189,10 @@ static async ReviseBlog(id,title,contain,tag,callback){
 /**
  * @summary 获得我发布的贴子
  * @param callback {function|null} 回调函数
- * @param studentId {string} 
- * @param order {string} 
- * @param pageNum {number} 
- * @param pageSize {number} 
+ * @param studentId {string} 学生Id
+ * @param order {string} 排序方式0为降序,1为升序
+ * @param pageNum {number} 页码
+ * @param pageSize {number} 每页数量
  * @returns Promise {}
  * @author Alever Lai
  */
@@ -172,7 +204,7 @@ static async ListMyBlog(studentId,order,pageNum,pageSize,callback){
       data:{studentId,order,pageNum,pageSize,},
       params:{studentId,order,pageNum,pageSize,},
       headers:{
-        "Content-type":"application/x-www-form-urlencoded; charset=utf-8;"
+        "Content-Type":"application/x-www-form-urlencoded; charset=utf-8;"
       }
     })
     .then(res=>{
@@ -189,7 +221,41 @@ static async ListMyBlog(studentId,order,pageNum,pageSize,callback){
 
 
 /**
- * @summary 获取所有帖子
+ * @summary 获得某帖子的评论列表
+ * @param callback {function|null} 回调函数
+ * @param blogId {number} blog的id
+ * @param pageNum {number} 页码
+ * @param pageSize {number} 每页数量
+ * @param order {number} 序方式0为降序,1为升序
+ * @returns Promise {}
+ * @author Alever Lai
+ */
+static async ListComment(blogId,pageNum,pageSize,order,callback){
+  return await new Promise((resolve,reject)=>{
+    axios({
+      method:'get',
+      url:'/Blog/ListComment',
+      data:{blogId,pageNum,pageSize,order,},
+      params:{blogId,pageNum,pageSize,order,},
+      headers:{
+        "Content-Type":"application/x-www-form-urlencoded; charset=utf-8;"
+      }
+    })
+    .then(res=>{
+      resolve(res.data)
+      if (callback!=null){
+        callback(res.data)
+      }
+    }).catch(err=>{
+      reject(err)
+    })
+  })
+}
+ 
+
+
+/**
+ * @summary 
  * @param callback {function|null} 回调函数
  * @param tag {number} 
  * @param order {number} 
@@ -206,7 +272,7 @@ static async ListBlog(tag,order,pageNum,pageSize,callback){
       data:{tag,order,pageNum,pageSize,},
       params:{tag,order,pageNum,pageSize,},
       headers:{
-        "Content-type":"application/x-www-form-urlencoded; charset=utf-8;"
+        "Content-Type":"application/x-www-form-urlencoded; charset=utf-8;"
       }
     })
     .then(res=>{
@@ -237,7 +303,7 @@ static async Viewed(id,callback){
       data:{id,},
       params:{id,},
       headers:{
-        "Content-type":"application/x-www-form-urlencoded; charset=utf-8;"
+        "Content-Type":"application/x-www-form-urlencoded; charset=utf-8;"
       }
     })
     .then(res=>{
@@ -274,7 +340,7 @@ static async SendComment(id,contain,uid,blog,cid,touser,publish_time,callback){
       data:{id,contain,uid,blog,cid,touser,publish_time,},
       params:{},
       headers:{
-        "Content-type":"application/x-www-form-urlencoded; charset=utf-8;"
+        "Content-Type":"application/x-www-form-urlencoded; charset=utf-8;"
       }
     })
     .then(res=>{
@@ -305,7 +371,7 @@ static async DeleteBlogComment(id,callback){
       data:{id,},
       params:{id,},
       headers:{
-        "Content-type":"application/x-www-form-urlencoded; charset=utf-8;"
+        "Content-Type":"application/x-www-form-urlencoded; charset=utf-8;"
       }
     })
     .then(res=>{
@@ -343,7 +409,7 @@ static async AddContest(name,type,avatar,description,callback){
       data:{name,type,avatar,description,},
       params:{},
       headers:{
-        "Content-type":"application/x-www-form-urlencoded; charset=utf-8;"
+        "Content-Type":"application/x-www-form-urlencoded; charset=utf-8;"
       }
     })
     .then(res=>{
@@ -377,7 +443,7 @@ static async ReviseContest(id,type,avatar,description,callback){
       data:{id,type,avatar,description,},
       params:{},
       headers:{
-        "Content-type":"application/x-www-form-urlencoded; charset=utf-8;"
+        "Content-Type":"application/x-www-form-urlencoded; charset=utf-8;"
       }
     })
     .then(res=>{
@@ -408,7 +474,7 @@ static async DeleteContestList(idList,callback){
       data:{idList,},
       params:{},
       headers:{
-        "Content-type":"application/x-www-form-urlencoded; charset=utf-8;"
+        "Content-Type":"application/x-www-form-urlencoded; charset=utf-8;"
       }
     })
     .then(res=>{
@@ -439,7 +505,7 @@ static async DeleteContest(id,callback){
       data:{id,},
       params:{id,},
       headers:{
-        "Content-type":"application/x-www-form-urlencoded; charset=utf-8;"
+        "Content-Type":"application/x-www-form-urlencoded; charset=utf-8;"
       }
     })
     .then(res=>{
@@ -469,7 +535,7 @@ static async ListContest(callback){
       data:{},
       params:{},
       headers:{
-        "Content-type":"application/x-www-form-urlencoded; charset=utf-8;"
+        "Content-Type":"application/x-www-form-urlencoded; charset=utf-8;"
       }
     })
     .then(res=>{
@@ -501,7 +567,7 @@ static async AddContestProperty(name,description,callback){
       data:{name,description,},
       params:{},
       headers:{
-        "Content-type":"application/x-www-form-urlencoded; charset=utf-8;"
+        "Content-Type":"application/x-www-form-urlencoded; charset=utf-8;"
       }
     })
     .then(res=>{
@@ -532,7 +598,7 @@ static async DeleteContestProperty(name,callback){
       data:{name,},
       params:{name,},
       headers:{
-        "Content-type":"application/x-www-form-urlencoded; charset=utf-8;"
+        "Content-Type":"application/x-www-form-urlencoded; charset=utf-8;"
       }
     })
     .then(res=>{
@@ -564,7 +630,7 @@ static async ReviseContestProperty(name,description,callback){
       data:{name,description,},
       params:{},
       headers:{
-        "Content-type":"application/x-www-form-urlencoded; charset=utf-8;"
+        "Content-Type":"application/x-www-form-urlencoded; charset=utf-8;"
       }
     })
     .then(res=>{
@@ -594,7 +660,7 @@ static async ListContestProperties(callback){
       data:{},
       params:{},
       headers:{
-        "Content-type":"application/x-www-form-urlencoded; charset=utf-8;"
+        "Content-Type":"application/x-www-form-urlencoded; charset=utf-8;"
       }
     })
     .then(res=>{
@@ -629,7 +695,7 @@ static async SetContestPermission(cid,pids,statuses,starts,ends,callback){
       data:{cid,pids,statuses,starts,ends,},
       params:{},
       headers:{
-        "Content-type":"application/x-www-form-urlencoded; charset=utf-8;"
+        "Content-Type":"application/x-www-form-urlencoded; charset=utf-8;"
       }
     })
     .then(res=>{
@@ -660,7 +726,7 @@ static async GetContestInfo(id,callback){
       data:{id,},
       params:{id,},
       headers:{
-        "Content-type":"application/x-www-form-urlencoded; charset=utf-8;"
+        "Content-Type":"application/x-www-form-urlencoded; charset=utf-8;"
       }
     })
     .then(res=>{
@@ -697,7 +763,7 @@ static async Apply(cid,teamName,worksName,teacher,topic,snoes,members,callback){
       data:{cid,teamName,worksName,teacher,topic,snoes,members,},
       params:{},
       headers:{
-        "Content-type":"application/x-www-form-urlencoded; charset=utf-8;"
+        "Content-Type":"application/x-www-form-urlencoded; charset=utf-8;"
       }
     })
     .then(res=>{
@@ -727,7 +793,7 @@ static async GetApplyInfo(callback){
       data:{},
       params:{},
       headers:{
-        "Content-type":"application/x-www-form-urlencoded; charset=utf-8;"
+        "Content-Type":"application/x-www-form-urlencoded; charset=utf-8;"
       }
     })
     .then(res=>{
@@ -758,7 +824,7 @@ static async ListAppliesInfo(cid,callback){
       data:{cid,},
       params:{cid,},
       headers:{
-        "Content-type":"application/x-www-form-urlencoded; charset=utf-8;"
+        "Content-Type":"application/x-www-form-urlencoded; charset=utf-8;"
       }
     })
     .then(res=>{
@@ -789,7 +855,7 @@ static async ListUserApply(cid,callback){
       data:{cid,},
       params:{cid,},
       headers:{
-        "Content-type":"application/x-www-form-urlencoded; charset=utf-8;"
+        "Content-Type":"application/x-www-form-urlencoded; charset=utf-8;"
       }
     })
     .then(res=>{
@@ -820,7 +886,7 @@ static async DeleteApply(id,callback){
       data:{id,},
       params:{id,},
       headers:{
-        "Content-type":"application/x-www-form-urlencoded; charset=utf-8;"
+        "Content-Type":"application/x-www-form-urlencoded; charset=utf-8;"
       }
     })
     .then(res=>{
@@ -851,7 +917,7 @@ static async DeleteApplyList(idList,callback){
       data:{idList,},
       params:{},
       headers:{
-        "Content-type":"application/x-www-form-urlencoded; charset=utf-8;"
+        "Content-Type":"application/x-www-form-urlencoded; charset=utf-8;"
       }
     })
     .then(res=>{
@@ -884,7 +950,7 @@ static async SendNotice(title,contain,idList,callback){
       data:{title,contain,idList,},
       params:{},
       headers:{
-        "Content-type":"application/x-www-form-urlencoded; charset=utf-8;"
+        "Content-Type":"application/x-www-form-urlencoded; charset=utf-8;"
       }
     })
     .then(res=>{
@@ -915,7 +981,7 @@ static async ExcelApplyInfo(idList,callback){
       data:{idList,},
       params:{},
       headers:{
-        "Content-type":"application/x-www-form-urlencoded; charset=utf-8;"
+        "Content-Type":"application/x-www-form-urlencoded; charset=utf-8;"
       }
     })
     .then(res=>{
@@ -961,7 +1027,7 @@ static async Apply(id,name,nickname,pwd,avatar,gender,email,mobile,apply_time,pr
       data:{id,name,nickname,pwd,avatar,gender,email,mobile,apply_time,process,qq,code,},
       params:{},
       headers:{
-        "Content-type":"application/x-www-form-urlencoded; charset=utf-8;"
+        "Content-Type":"application/x-www-form-urlencoded; charset=utf-8;"
       }
     })
     .then(res=>{
@@ -992,7 +1058,7 @@ static async GetCode(email,callback){
       data:{email,},
       params:{email,},
       headers:{
-        "Content-type":"application/x-www-form-urlencoded; charset=utf-8;"
+        "Content-Type":"application/x-www-form-urlencoded; charset=utf-8;"
       }
     })
     .then(res=>{
@@ -1024,7 +1090,7 @@ static async Login(id,pwd,callback){
       data:{id,pwd,},
       params:{},
       headers:{
-        "Content-type":"application/x-www-form-urlencoded; charset=utf-8;"
+        "Content-Type":"application/x-www-form-urlencoded; charset=utf-8;"
       }
     })
     .then(res=>{
@@ -1056,7 +1122,7 @@ static async TokenLogin(id,pwd,callback){
       data:{id,pwd,},
       params:{},
       headers:{
-        "Content-type":"application/x-www-form-urlencoded; charset=utf-8;"
+        "Content-Type":"application/x-www-form-urlencoded; charset=utf-8;"
       }
     })
     .then(res=>{
@@ -1086,7 +1152,7 @@ static async SOSDPublicKey(callback){
       data:{},
       params:{},
       headers:{
-        "Content-type":"application/x-www-form-urlencoded; charset=utf-8;"
+        "Content-Type":"application/x-www-form-urlencoded; charset=utf-8;"
       }
     })
     .then(res=>{
@@ -1117,7 +1183,7 @@ static async GetOAuthLogin(client_id,callback){
       data:{client_id,},
       params:{client_id,},
       headers:{
-        "Content-type":"application/x-www-form-urlencoded; charset=utf-8;"
+        "Content-Type":"application/x-www-form-urlencoded; charset=utf-8;"
       }
     })
     .then(res=>{
@@ -1149,7 +1215,7 @@ static async ResponseOAuthLogin(id,pwd,callback){
       data:{id,pwd,},
       params:{},
       headers:{
-        "Content-type":"application/x-www-form-urlencoded; charset=utf-8;"
+        "Content-Type":"application/x-www-form-urlencoded; charset=utf-8;"
       }
     })
     .then(res=>{
@@ -1192,7 +1258,7 @@ static async JoinLab(id,uid,dir1,dir2,adjust,introduction,works,applicate_time,s
       data:{id,uid,dir1,dir2,adjust,introduction,works,applicate_time,student,},
       params:{},
       headers:{
-        "Content-type":"application/x-www-form-urlencoded; charset=utf-8;"
+        "Content-Type":"application/x-www-form-urlencoded; charset=utf-8;"
       }
     })
     .then(res=>{
@@ -1231,7 +1297,7 @@ static async ReviseApplyInfo(id,uid,dir1,dir2,adjust,introduction,works,applicat
       data:{id,uid,dir1,dir2,adjust,introduction,works,applicate_time,student,},
       params:{},
       headers:{
-        "Content-type":"application/x-www-form-urlencoded; charset=utf-8;"
+        "Content-Type":"application/x-www-form-urlencoded; charset=utf-8;"
       }
     })
     .then(res=>{
@@ -1261,7 +1327,7 @@ static async GetApplyInfo(callback){
       data:{},
       params:{},
       headers:{
-        "Content-type":"application/x-www-form-urlencoded; charset=utf-8;"
+        "Content-Type":"application/x-www-form-urlencoded; charset=utf-8;"
       }
     })
     .then(res=>{
@@ -1291,7 +1357,7 @@ static async GetGroups(callback){
       data:{},
       params:{},
       headers:{
-        "Content-type":"application/x-www-form-urlencoded; charset=utf-8;"
+        "Content-Type":"application/x-www-form-urlencoded; charset=utf-8;"
       }
     })
     .then(res=>{
@@ -1331,7 +1397,7 @@ static async AddMember(id,avatar,name,grade,major,groupType,tour,motto,introduct
       data:{id,avatar,name,grade,major,groupType,tour,motto,introduction,toWhere,},
       params:{},
       headers:{
-        "Content-type":"application/x-www-form-urlencoded; charset=utf-8;"
+        "Content-Type":"application/x-www-form-urlencoded; charset=utf-8;"
       }
     })
     .then(res=>{
@@ -1362,7 +1428,7 @@ static async DeleteMember(id,callback){
       data:{id,},
       params:{id,},
       headers:{
-        "Content-type":"application/x-www-form-urlencoded; charset=utf-8;"
+        "Content-Type":"application/x-www-form-urlencoded; charset=utf-8;"
       }
     })
     .then(res=>{
@@ -1402,7 +1468,7 @@ static async ReviseMember(id,avatar,name,grade,major,groupType,tour,motto,introd
       data:{id,avatar,name,grade,major,groupType,tour,motto,introduction,toWhere,},
       params:{},
       headers:{
-        "Content-type":"application/x-www-form-urlencoded; charset=utf-8;"
+        "Content-Type":"application/x-www-form-urlencoded; charset=utf-8;"
       }
     })
     .then(res=>{
@@ -1434,7 +1500,7 @@ static async Authority(id,prop,callback){
       data:{id,prop,},
       params:{},
       headers:{
-        "Content-type":"application/x-www-form-urlencoded; charset=utf-8;"
+        "Content-Type":"application/x-www-form-urlencoded; charset=utf-8;"
       }
     })
     .then(res=>{
@@ -1469,7 +1535,7 @@ static async AddTeacher(id,avatar,name,introduction,publish_time,callback){
       data:{id,avatar,name,introduction,publish_time,},
       params:{},
       headers:{
-        "Content-type":"application/x-www-form-urlencoded; charset=utf-8;"
+        "Content-Type":"application/x-www-form-urlencoded; charset=utf-8;"
       }
     })
     .then(res=>{
@@ -1500,7 +1566,7 @@ static async DeleteTeacher(id,callback){
       data:{id,},
       params:{id,},
       headers:{
-        "Content-type":"application/x-www-form-urlencoded; charset=utf-8;"
+        "Content-Type":"application/x-www-form-urlencoded; charset=utf-8;"
       }
     })
     .then(res=>{
@@ -1535,7 +1601,7 @@ static async ReviseTeacher(id,avatar,name,introduction,publish_time,callback){
       data:{id,avatar,name,introduction,publish_time,},
       params:{},
       headers:{
-        "Content-type":"application/x-www-form-urlencoded; charset=utf-8;"
+        "Content-Type":"application/x-www-form-urlencoded; charset=utf-8;"
       }
     })
     .then(res=>{
@@ -1565,7 +1631,7 @@ static async ListMember(callback){
       data:{},
       params:{},
       headers:{
-        "Content-type":"application/x-www-form-urlencoded; charset=utf-8;"
+        "Content-Type":"application/x-www-form-urlencoded; charset=utf-8;"
       }
     })
     .then(res=>{
@@ -1595,7 +1661,7 @@ static async ListTeacher(callback){
       data:{},
       params:{},
       headers:{
-        "Content-type":"application/x-www-form-urlencoded; charset=utf-8;"
+        "Content-Type":"application/x-www-form-urlencoded; charset=utf-8;"
       }
     })
     .then(res=>{
@@ -1626,7 +1692,7 @@ static async DeleteApplyPersonList(idList,callback){
       data:{idList,},
       params:{},
       headers:{
-        "Content-type":"application/x-www-form-urlencoded; charset=utf-8;"
+        "Content-Type":"application/x-www-form-urlencoded; charset=utf-8;"
       }
     })
     .then(res=>{
@@ -1657,7 +1723,7 @@ static async DeleteMemberList(idList,callback){
       data:{idList,},
       params:{},
       headers:{
-        "Content-type":"application/x-www-form-urlencoded; charset=utf-8;"
+        "Content-Type":"application/x-www-form-urlencoded; charset=utf-8;"
       }
     })
     .then(res=>{
@@ -1687,7 +1753,7 @@ static async ListApplyPerson(callback){
       data:{},
       params:{},
       headers:{
-        "Content-type":"application/x-www-form-urlencoded; charset=utf-8;"
+        "Content-Type":"application/x-www-form-urlencoded; charset=utf-8;"
       }
     })
     .then(res=>{
@@ -1718,7 +1784,7 @@ static async ExcelApplyInfo(idList,callback){
       data:{idList,},
       params:{},
       headers:{
-        "Content-type":"application/x-www-form-urlencoded; charset=utf-8;"
+        "Content-Type":"application/x-www-form-urlencoded; charset=utf-8;"
       }
     })
     .then(res=>{
@@ -1751,7 +1817,7 @@ static async SendNotice(title,contain,idList,callback){
       data:{title,contain,idList,},
       params:{},
       headers:{
-        "Content-type":"application/x-www-form-urlencoded; charset=utf-8;"
+        "Content-Type":"application/x-www-form-urlencoded; charset=utf-8;"
       }
     })
     .then(res=>{
@@ -1785,7 +1851,7 @@ static async GetIP(callback){
       data:{},
       params:{},
       headers:{
-        "Content-type":"application/x-www-form-urlencoded; charset=utf-8;"
+        "Content-Type":"application/x-www-form-urlencoded; charset=utf-8;"
       }
     })
     .then(res=>{
@@ -1821,7 +1887,7 @@ static async ChangePassword(p_old,p_new,callback){
       data:{p_old,p_new,},
       params:{},
       headers:{
-        "Content-type":"application/x-www-form-urlencoded; charset=utf-8;"
+        "Content-Type":"application/x-www-form-urlencoded; charset=utf-8;"
       }
     })
     .then(res=>{
@@ -1852,7 +1918,7 @@ static async GetCode(email,callback){
       data:{email,},
       params:{email,},
       headers:{
-        "Content-type":"application/x-www-form-urlencoded; charset=utf-8;"
+        "Content-Type":"application/x-www-form-urlencoded; charset=utf-8;"
       }
     })
     .then(res=>{
@@ -1885,7 +1951,7 @@ static async ForgetPassword(email,p_new,code,callback){
       data:{email,p_new,code,},
       params:{},
       headers:{
-        "Content-type":"application/x-www-form-urlencoded; charset=utf-8;"
+        "Content-Type":"application/x-www-form-urlencoded; charset=utf-8;"
       }
     })
     .then(res=>{
@@ -1928,7 +1994,7 @@ static async SetUserInfo(sno,major,id,name,nickname,pwd,avatar,gender,email,mobi
       data:{sno,major,id,name,nickname,pwd,avatar,gender,email,mobile,apply_time,process,qq,},
       params:{},
       headers:{
-        "Content-type":"application/x-www-form-urlencoded; charset=utf-8;"
+        "Content-Type":"application/x-www-form-urlencoded; charset=utf-8;"
       }
     })
     .then(res=>{
@@ -1958,7 +2024,7 @@ static async GetMyJoinInfo(callback){
       data:{},
       params:{},
       headers:{
-        "Content-type":"application/x-www-form-urlencoded; charset=utf-8;"
+        "Content-Type":"application/x-www-form-urlencoded; charset=utf-8;"
       }
     })
     .then(res=>{
@@ -1988,7 +2054,7 @@ static async GetUserInfo(callback){
       data:{},
       params:{},
       headers:{
-        "Content-type":"application/x-www-form-urlencoded; charset=utf-8;"
+        "Content-Type":"application/x-www-form-urlencoded; charset=utf-8;"
       }
     })
     .then(res=>{
@@ -2018,7 +2084,7 @@ static async GetAvatar(callback){
       data:{},
       params:{},
       headers:{
-        "Content-type":"application/x-www-form-urlencoded; charset=utf-8;"
+        "Content-Type":"application/x-www-form-urlencoded; charset=utf-8;"
       }
     })
     .then(res=>{
@@ -2049,7 +2115,7 @@ static async GetAvatarById(id,callback){
       data:{id,},
       params:{id,},
       headers:{
-        "Content-type":"application/x-www-form-urlencoded; charset=utf-8;"
+        "Content-Type":"application/x-www-form-urlencoded; charset=utf-8;"
       }
     })
     .then(res=>{
@@ -2080,7 +2146,7 @@ static async ChangeAvatar(avatar,callback){
       data:{avatar,},
       params:{},
       headers:{
-        "Content-type":"application/x-www-form-urlencoded; charset=utf-8;"
+        "Content-Type":"application/x-www-form-urlencoded; charset=utf-8;"
       }
     })
     .then(res=>{
@@ -2111,7 +2177,7 @@ static async SetEmail(email,callback){
       data:{email,},
       params:{},
       headers:{
-        "Content-type":"application/x-www-form-urlencoded; charset=utf-8;"
+        "Content-Type":"application/x-www-form-urlencoded; charset=utf-8;"
       }
     })
     .then(res=>{
@@ -2142,7 +2208,7 @@ static async SetMobile(mobile,callback){
       data:{mobile,},
       params:{},
       headers:{
-        "Content-type":"application/x-www-form-urlencoded; charset=utf-8;"
+        "Content-Type":"application/x-www-form-urlencoded; charset=utf-8;"
       }
     })
     .then(res=>{
@@ -2172,7 +2238,7 @@ static async GetUserRole(callback){
       data:{},
       params:{},
       headers:{
-        "Content-type":"application/x-www-form-urlencoded; charset=utf-8;"
+        "Content-Type":"application/x-www-form-urlencoded; charset=utf-8;"
       }
     })
     .then(res=>{
@@ -2202,7 +2268,7 @@ static async Logout(callback){
       data:{},
       params:{},
       headers:{
-        "Content-type":"application/x-www-form-urlencoded; charset=utf-8;"
+        "Content-Type":"application/x-www-form-urlencoded; charset=utf-8;"
       }
     })
     .then(res=>{
@@ -2232,7 +2298,7 @@ static async ListUser(callback){
       data:{},
       params:{},
       headers:{
-        "Content-type":"application/x-www-form-urlencoded; charset=utf-8;"
+        "Content-Type":"application/x-www-form-urlencoded; charset=utf-8;"
       }
     })
     .then(res=>{
@@ -2263,7 +2329,7 @@ static async GetAuth(id,callback){
       data:{id,},
       params:{id,},
       headers:{
-        "Content-type":"application/x-www-form-urlencoded; charset=utf-8;"
+        "Content-Type":"application/x-www-form-urlencoded; charset=utf-8;"
       }
     })
     .then(res=>{
@@ -2294,7 +2360,7 @@ static async GetUserInfoOAuth(id,callback){
       data:{id,},
       params:{id,},
       headers:{
-        "Content-type":"application/x-www-form-urlencoded; charset=utf-8;"
+        "Content-Type":"application/x-www-form-urlencoded; charset=utf-8;"
       }
     })
     .then(res=>{
@@ -2325,7 +2391,7 @@ static async ImportUserList(file,callback){
       data:{file,},
       params:{},
       headers:{
-        "Content-type":"application/x-www-form-urlencoded; charset=utf-8;"
+        "Content-Type":"application/x-www-form-urlencoded; charset=utf-8;"
       }
     })
     .then(res=>{
@@ -2367,7 +2433,7 @@ static async addUser(id,name,nickname,pwd,avatar,gender,email,mobile,apply_time,
       data:{id,name,nickname,pwd,avatar,gender,email,mobile,apply_time,process,qq,type,},
       params:{},
       headers:{
-        "Content-type":"application/x-www-form-urlencoded; charset=utf-8;"
+        "Content-Type":"application/x-www-form-urlencoded; charset=utf-8;"
       }
     })
     .then(res=>{
@@ -2411,7 +2477,7 @@ static async AddWorks(id,time,place,worksName,award,teamName,members,avatar1,ava
       data:{id,time,place,worksName,award,teamName,members,avatar1,avatar2,type,},
       params:{},
       headers:{
-        "Content-type":"application/x-www-form-urlencoded; charset=utf-8;"
+        "Content-Type":"application/x-www-form-urlencoded; charset=utf-8;"
       }
     })
     .then(res=>{
@@ -2442,7 +2508,7 @@ static async DeleteWorks(id,callback){
       data:{id,},
       params:{id,},
       headers:{
-        "Content-type":"application/x-www-form-urlencoded; charset=utf-8;"
+        "Content-Type":"application/x-www-form-urlencoded; charset=utf-8;"
       }
     })
     .then(res=>{
@@ -2482,7 +2548,7 @@ static async ReviseWorks(id,time,place,worksName,award,teamName,members,avatar1,
       data:{id,time,place,worksName,award,teamName,members,avatar1,avatar2,type,},
       params:{},
       headers:{
-        "Content-type":"application/x-www-form-urlencoded; charset=utf-8;"
+        "Content-Type":"application/x-www-form-urlencoded; charset=utf-8;"
       }
     })
     .then(res=>{
@@ -2512,7 +2578,7 @@ static async ListWorks(callback){
       data:{},
       params:{},
       headers:{
-        "Content-type":"application/x-www-form-urlencoded; charset=utf-8;"
+        "Content-Type":"application/x-www-form-urlencoded; charset=utf-8;"
       }
     })
     .then(res=>{
@@ -2543,7 +2609,7 @@ static async DeleteWorksList(idList,callback){
       data:{idList,},
       params:{},
       headers:{
-        "Content-type":"application/x-www-form-urlencoded; charset=utf-8;"
+        "Content-Type":"application/x-www-form-urlencoded; charset=utf-8;"
       }
     })
     .then(res=>{

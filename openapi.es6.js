@@ -90,7 +90,7 @@ static async {{methodName}}({{paramsName}}callback){
       data:{{{paramsName}}},
       params:{{{queryName}}},
       headers:{
-        "Content-type":"{{contentType}}"
+        "Content-Type":"{{contentType}}"
       }
     })
     .then(res=>{
