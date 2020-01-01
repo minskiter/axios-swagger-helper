@@ -1,18 +1,16 @@
-let docs = ''
+let docs = "";
 const render = require("./render");
-const fileSave = require("file-save");
+const fs = require("fs");
 const path = require("path");
 const uppercamelcase = require("uppercamelcase");
 const axios = require("axios");
-
-
 
 process.addListener("exit", function(code) {
   console.log();
 });
 
 async function getDocs(url) {
-  if (url.includes('http'))
+  if (url.includes("http"))
     return await new Promise((resolve, reject) => {
       axios
         .get(url)
@@ -23,14 +21,14 @@ async function getDocs(url) {
           reject(err.data);
         });
     });
-  else{
-    return require(url)
+  else {
+    return require(url);
   }
 }
 
 async function main(url) {
   let jsonUrl = process.argv[2] || url;
-  if (jsonUrl) {
+  if (jsonUrl.includes('http')) {
     await getDocs(jsonUrl)
       .then(res => {
         docs = res;
@@ -39,6 +37,8 @@ async function main(url) {
       .catch(err => {
         console.log(err);
       });
+  }else{
+    docs = require(jsonUrl)
   }
 
   let content = `import ax from 'axios'
@@ -117,28 +117,35 @@ static async {{methodName}}({{paramsName}}callback){
         method,
         summary: " @summary " + (apiJson.summary || ""),
         url: key,
-        return: " @returns " + `Promise {${apiJson.produces || ""}}`,
+        return: " @returns " + `{Promise} ${apiJson.produces || ""}`,
         author: " @author " + (docs.info.contact.name || " api-docs-script"),
-        params: ` @param callback {function|null} 回调函数\n`,
+        params: ` @param {function} [callback] 回调函数\n`,
         paramsName: "",
-        contentType:'application/x-www-form-urlencoded; charset=utf-8;'
+        contentType: "application/x-www-form-urlencoded; charset=utf-8;"
       };
       // 判断参数
       for (let index in apiJson.parameters) {
         let parm = apiJson.parameters[index];
         // 复杂对象
-        if (parm.name.includes('.')){
-          let objName = parm.name.split('.')[0];
-          if (api.paramsName.includes(objName)){
+        if (parm.name.includes(".")) {
+          let objName = parm.name.split(".")[0];
+          if (api.paramsName.includes(objName)) {
             continue; //已经存在则跳过
           }
-          parm.name=objName,
-          parm.type="object",
-          parm.description = objName
+          (parm.name = objName),
+            (parm.type = "object"),
+            (parm.description = objName);
         }
-        api.params += ` @param ${parm.name} {${types[
-          uppercamelcase(parm.type)
-        ] || uppercamelcase(parm.type)}} ${parm.description || ""}\n`;
+        if (parm.required){
+          api.params += ` @param {${types[
+            uppercamelcase(parm.type)
+          ] || uppercamelcase(parm.type)}} ${parm.name} - ${parm.type=='string'?parm.pattern || '':''} ${parm.type=='integer'?parm.minimum+'-'+parm.maximum:''} ${parm.description || ""}\n`;
+        }
+        else{
+          api.params += ` @param {${types[
+            uppercamelcase(parm.type)
+          ] || uppercamelcase(parm.type)}} [${parm.name}${parm.default?'='+parm.default:''}] - ${parm.description || ""}\n`;
+        }
         api.paramsName += parm.name + ",";
         if (parm.in == "query") {
           api.contentType = "application/x-www-form-urlencoded; charset=utf-8;";
@@ -174,17 +181,18 @@ static async {{methodName}}({{paramsName}}callback){
     // return ;
   }
 
+
   for (let key in apiClass) {
     content += render(template.class, apiClass[key]);
   }
 
-  fileSave(path.join(__dirname, "./api/api.js"))
-    .write(content, "utf8")
-    .end("\n");
+  fs.writeFile(path.join(__dirname,'./api.js'),content,()=>{
+    console.log('api.js create success!')
+  })
 }
 
-main()
+main('./test.json');
 
-export default function(url){
-  main(url)
+export default function(url) {
+  main(url);
 }
