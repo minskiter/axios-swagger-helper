@@ -131,6 +131,7 @@ async function gen(apis) {
   for (let className in apis) {
     let controller = apis[className];
     for (let methodName in controller) {
+      loger.info((className + "." + methodName).green);
       let action = controller[methodName];
       let comment = [];
       comment.push("  * @summary " + action.summary);
@@ -182,7 +183,7 @@ async function gen(apis) {
   }
   apiContent = apiContent.join("\n");
   fs.writeFile(path.join(process.cwd(), "./api.js"), apiContent, () => {
-    loger.info("Success!");
+    loger.info("[DONE] Success!".green);
   });
 }
 

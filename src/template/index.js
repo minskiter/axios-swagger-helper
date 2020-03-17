@@ -1,5 +1,4 @@
 module.exports = `import ax from 'axios'
-import qs from 'qs'
 let axios = ax.create()
 
 axios.interceptors.request.use(
