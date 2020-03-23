@@ -22,7 +22,7 @@ async function decode(docs) {
           apis[className] = {};
         }
         let api = {
-          path: path.replace("{", "'+").replace("}", "+'"),
+          path: path.replace(/{/g, "'+").replace(/}/g, "+'"),
           method: method,
           query: [],
           parameters: [],
@@ -56,6 +56,11 @@ async function decode(docs) {
               let rgx = new RegExp("\\'\\+" + parm.name + "\\+\\'", "gi");
               api.path = api.path.replace(
                 rgx,
+                "'+" + uppercamelcase(parm.name) + "+'"
+              );
+              let lowerRex = new RegExp("\\'\\+" + parm.name.toLowerCase() + "\\+\\'", "gi");
+              api.path = api.path.replace(
+                lowerRex,
                 "'+" + uppercamelcase(parm.name) + "+'"
               );
             }
@@ -127,8 +132,8 @@ const indexT = require("./template/index");
 
 async function gen(apis) {
   let apiContent = [indexT];
-  let functions = [];
   for (let className in apis) {
+    let functions = [];
     let controller = apis[className];
     for (let methodName in controller) {
       loger.info((className + "." + methodName).green);
