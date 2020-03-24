@@ -1,5 +1,4 @@
-module.exports = `import ax from 'axios'
-let axios = ax.create()
+module.exports = `import axios from './axios'
 
 axios.interceptors.request.use(
   config => {

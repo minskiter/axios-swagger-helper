@@ -187,6 +187,7 @@ async function gen(apis) {
     );
   }
   apiContent = apiContent.join("\n");
+  return apiContent;
   fs.writeFile(path.join(process.cwd(), "./api.js"), apiContent, () => {
     loger.info("[DONE] Success!".green);
   });
@@ -195,5 +196,5 @@ async function gen(apis) {
 module.exports = async function(url) {
   let docs = await docsHelper.getDocs(url);
   await decode(docs);
-  await gen(apis);
+  return await gen(apis);
 };

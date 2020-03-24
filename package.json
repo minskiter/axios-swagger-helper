@@ -16,6 +16,9 @@
   "bin": {
     "api-cli": "./src/index.js"
   },
+  "keywords": [
+    "swagger","axios"
+  ],
   "dependencies": {
     "@babel/core": "^7.7.5",
     "axios": "^0.19.0",
