@@ -14,9 +14,11 @@ module.exports = `
         }
       })
       .then(res=>{
-        resolve(res.data)
+        resolve(res.data);
+        return res.data;
       }).catch(err=>{
-        reject(err.response.data)
+        reject(err.response.data);
+        return err.response.data;
       })
     })
   }`;
