@@ -49,9 +49,10 @@ async function decode(docs) {
               type: parameter.schema ? parameter.schema.type : "object",
               summary: parameter.description ? parameter.description : ""
             };
-            api.parameters.push(parm);
+            
             if (parameter.in == "query") {
               api.query.push(parm);
+              api.parameters.push(parm);
             } else if (parameter.in == "path") {
               let rgx = new RegExp("\\'\\+" + parm.name + "\\+\\'", "gi");
               api.path = api.path.replace(
@@ -63,6 +64,10 @@ async function decode(docs) {
                 lowerRex,
                 "'+" + uppercamelcase(parm.name) + "+'"
               );
+              api.path = api.path.replace( "'+" + uppercamelcase(parm.name) + "+'", 
+              "'+" + uppercamelcase("Path"+parm.name) + "+'")
+              parm.name="Path"+parm.name;
+              api.parameters.push(parm);
             }
           }
         }
@@ -188,9 +193,6 @@ async function gen(apis) {
   }
   apiContent = apiContent.join("\n");
   return apiContent;
-  fs.writeFile(path.join(process.cwd(), "./api.js"), apiContent, () => {
-    loger.info("[DONE] Success!".green);
-  });
 }
 
 module.exports = async function(url) {
