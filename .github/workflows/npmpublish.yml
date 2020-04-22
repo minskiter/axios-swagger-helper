@@ -22,7 +22,7 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.npm_token }}
 
   publish-pkg:
-    run-on: ubuntu-latest
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
