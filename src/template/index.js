@@ -1,4 +1,5 @@
-module.exports = `/* eslint-disabled */
+module.exports = `/* eslint-disable */
+// Auto Scripts G Don't Edit
 import axios from './axios'
 
 axios.interceptors.request.use(

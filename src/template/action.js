@@ -21,9 +21,10 @@ module.exports = `
           }))
         }else{
           resolve(res.data);
+          return res.data
         }
       }).catch(err=>{
-        reject(err.response.data);
+        reject(err.response);
       })
     })
   }`;
