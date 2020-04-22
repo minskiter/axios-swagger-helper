@@ -15,7 +15,13 @@ module.exports = `
         responseType:"{{responseType}}"
       })
       .then(res=>{
-        resolve(res.data);
+        if (res.config.responseType=="blob"){
+          resolve(new Blob([res.data],{
+            type: res.headers["content-type"].split(";")[0]
+          }))
+        }else{
+          resolve(res.data);
+        }
       }).catch(err=>{
         reject(err.response.data);
       })

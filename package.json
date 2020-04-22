@@ -1,6 +1,6 @@
 {
   "name": "axios-swagger-helper",
-  "version": "0.0.18",
+  "version": "0.0.19",
   "description": "swagger.json 自动生成axios 示例，实现自动化生成，并支持前后对比，节省前端写api代码的时间",
   "main": "index.js",
   "repository": "https://github.com/minskiter/openapijs.git",
@@ -11,7 +11,7 @@
     "git": "git add -A && git commit -m '[update]' && git push",
     "dev": "node --inspect-brk ./src/index.js",
     "clean": "rm ./api.js",
-    "babel": "babel"
+    "babel": "babel-node"
   },
   "bin": {
     "api-cli": "./src/index.js"

@@ -28,6 +28,7 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: 12
+          always-auth: true
           registry-url: 'https://npm.pkg.github.com'
           scope: '@minskiter'
       - run: yarn
