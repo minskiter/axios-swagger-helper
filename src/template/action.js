@@ -11,14 +11,13 @@ module.exports = `
         params:{{{queryName}}},
         headers:{
           "Content-Type":"{{contentType}}"
-        }
+        },
+        responseType:"{{responseType}}"
       })
       .then(res=>{
         resolve(res.data);
-        return res.data;
       }).catch(err=>{
         reject(err.response.data);
-        return err.response.data;
       })
     })
   }`;

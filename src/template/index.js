@@ -1,4 +1,5 @@
-module.exports = `import axios from './axios'
+module.exports = `/* eslint-disabled */
+import axios from './axios'
 
 axios.interceptors.request.use(
   config => {

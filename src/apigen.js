@@ -122,6 +122,18 @@ async function decode(docs) {
             }
           }
         }
+        // assign response type for blob
+        if (json.responses[200]){
+          if (json.responses[200].content)
+          for (let key in json.responses[200].content){
+            if (key!="application/json"){
+              api["responseType"]="blob";
+            }else{
+              api["responseType"]="json"
+            }
+            break;
+          }
+        }
         apis[className][json.operationId] = api;
       }
     }
@@ -179,7 +191,8 @@ async function gen(apis) {
         queryName,
         url: action.path,
         method: action.method,
-        contentType: action.contentType
+        contentType: action.contentType,
+        responseType: action.responseType
       });
       functions.push(apiT);
     }
