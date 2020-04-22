@@ -1,6 +1,6 @@
 {
   "name": "axios-swagger-helper",
-  "version": "0.0.13",
+  "version": "0.0.12",
   "description": "swagger.json 自动生成axios 示例，实现自动化生成，并支持前后对比，节省前端写api代码的时间",
   "main": "index.js",
   "repository": "https://github.com/minskiter/openapijs.git",
