@@ -97,6 +97,8 @@ async function decode(docs) {
             } else if (content == "application/json") {
               api.contentType = content;
               let parameter = item.schema;
+
+              // 如果是个对象
               let ref = parameter.$ref.split("/");
               parameter = docs;
               for (let index in ref) {
