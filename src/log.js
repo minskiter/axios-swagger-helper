@@ -1,3 +1,4 @@
+/** disable-eslint */
 require("colors");
 
 module.exports = {
