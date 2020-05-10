@@ -1,5 +1,6 @@
 /** disable-eslint */
 require("colors");
+//test
 
 module.exports = {
   info: (...message) => {
