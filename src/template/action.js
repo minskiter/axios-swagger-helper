@@ -4,16 +4,20 @@ module.exports = `
   */
   static async {{methodName}}({{paramsName}}){
     return await new Promise((resolve,reject)=>{
-      axios({
+      let responseType = "{{responseType}}";
+      let options = {
         method:'{{method}}',
         url:'{{url}}',
         data:{{{dataName}}},
         params:{{{queryName}}},
         headers:{
           "Content-Type":"{{contentType}}"
-        },
-        responseType:"{{responseType}}"
-      })
+        }
+      }
+      if (responseType != "json"){
+        options.responseType = responseType;
+      }
+      axios(options)
       .then(res=>{
         if (res.config.responseType=="blob"){
           resolve(new Blob([res.data],{
@@ -24,7 +28,10 @@ module.exports = `
           return res.data
         }
       }).catch(err=>{
-        reject(err.response);
+        if (err.response.data)
+          reject(err.response.data)
+        else
+          reject(err.response);
       })
     })
   }`;
