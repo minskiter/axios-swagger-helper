@@ -131,7 +131,7 @@ async function decode(docs) {
             if (key!="application/json"){
               api["responseType"]="blob";
             }else{
-              // api["responseType"]="json"
+              api["responseType"]="json"
             }
             break;
           }
