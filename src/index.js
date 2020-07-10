@@ -6,7 +6,7 @@ const apigen = require("./apigen");
 const file = require("./output")
 
 program
-  .version("0.0.7",'-v,--version')
+  .version("0.0.32",'-v,--version')
   .command("get [url]")
   .description("get axios vue api from swagger.json")
   .action(async function(url,program) {

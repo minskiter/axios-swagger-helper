@@ -1,22 +1,22 @@
-# Swgger Json 自动化生成 axios 请求函数
+### Open Api 3.0 Auto Gen Js Axios Client Code
 
-# Usage
+#### INSTALL
 
-yarn add axios-swagger-helper -D
-or npm install -D axios-swagger-helper
+yarn global add axios-swagger-helper
+or npm install -g axios-swagger-helper
 
-# Dev
+#### USAGE
+
+``` sh
+api-cli get {url} -d {output_dir}
+```
+
+#### Dev
 
 - git clone https://github.com/minskiter/openapijs.git # clone this repo
 - yarn # install dependencies
 - yarn dev # debug 
 
-- have fun
+#### Issues
 
-# 所依赖的json必须符合是标准的RESTFUL WEB API
-
-### 对于dotnet core web api
-1. 必须指定responseType
-2. 如果需要用formdata必须指定[fromform],query同需指定
-
-### 此工具处于beta阶段，只满足自用需求，未能适配所有情况，有任何新需求欢迎提出issue
+不符合需求，欢迎PR
