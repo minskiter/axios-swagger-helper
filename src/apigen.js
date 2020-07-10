@@ -28,7 +28,7 @@ async function decode(docs) {
           parameters: [],
           data: [],
           contentType: "",
-          summary: json.summary
+          summary: json.summary,
         };
         if (!json.operationId) {
           loger.error("operationId undefined.Please contact backend...");
@@ -47,9 +47,9 @@ async function decode(docs) {
             let parm = {
               name: parameter.name,
               type: parameter.schema ? parameter.schema.type : "object",
-              summary: parameter.description ? parameter.description : ""
+              summary: parameter.description ? parameter.description : "",
             };
-            
+
             if (parameter.in == "query") {
               api.query.push(parm);
               api.parameters.push(parm);
@@ -59,14 +59,19 @@ async function decode(docs) {
                 rgx,
                 "'+" + uppercamelcase(parm.name) + "+'"
               );
-              let lowerRex = new RegExp("\\'\\+" + parm.name.toLowerCase() + "\\+\\'", "gi");
+              let lowerRex = new RegExp(
+                "\\'\\+" + parm.name.toLowerCase() + "\\+\\'",
+                "gi"
+              );
               api.path = api.path.replace(
                 lowerRex,
                 "'+" + uppercamelcase(parm.name) + "+'"
               );
-              api.path = api.path.replace( "'+" + uppercamelcase(parm.name) + "+'", 
-              "'+" + uppercamelcase("Path"+parm.name) + "+'")
-              parm.name="Path"+parm.name;
+              api.path = api.path.replace(
+                "'+" + uppercamelcase(parm.name) + "+'",
+                "'+" + uppercamelcase("Path" + parm.name) + "+'"
+              );
+              parm.name = "Path" + parm.name;
               api.parameters.push(parm);
             }
           }
@@ -89,7 +94,7 @@ async function decode(docs) {
                   type: parameter[item].type ? parameter[item].type : "object",
                   summary: parameter[item].description
                     ? parameter[item].description
-                    : ""
+                    : "",
                 };
                 api.parameters.push(parm);
                 api.data.push(parm);
@@ -114,7 +119,7 @@ async function decode(docs) {
                   type: parameter[item].type ? parameter[item].type : "object",
                   summary: parameter[item].description
                     ? parameter[item].description
-                    : ""
+                    : "",
                 };
                 api.parameters.push(parm);
                 api.data.push(parm);
@@ -125,16 +130,23 @@ async function decode(docs) {
           }
         }
         // assign response type for blob
-        if (json.responses[200]){
+        if (json.responses[200]) {
           if (json.responses[200].content)
-          for (let key in json.responses[200].content){
-            if (key!="application/json"){
-              api["responseType"]="blob";
-            }else{
-              api["responseType"]="json"
+            for (let key in json.responses[200].content) {
+              if (key != "application/json" && key != "text/plain") {
+                api["responseType"] = "blob";
+              } else if (key == "text/plain") {
+                api["responseType"] = "text";
+              } else {
+                api["responseType"] = "json";
+              }
+              break;
             }
-            break;
+          else {
+            api["responseType"] = "json"; // default
           }
+        } else {
+          api["responseType"] = "json"; // default
         }
         apis[className][json.operationId] = api;
       }
@@ -194,7 +206,7 @@ async function gen(apis) {
         url: action.path,
         method: action.method,
         contentType: action.contentType,
-        responseType: action.responseType
+        responseType: action.responseType,
       });
       functions.push(apiT);
     }
@@ -202,7 +214,7 @@ async function gen(apis) {
     apiContent.push(
       render(classT, {
         className,
-        functions
+        functions,
       })
     );
   }
@@ -210,7 +222,7 @@ async function gen(apis) {
   return apiContent;
 }
 
-module.exports = async function(url) {
+module.exports = async function (url) {
   let docs = await docsHelper.getDocs(url);
   await decode(docs);
   return await gen(apis);
