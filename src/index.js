@@ -5,8 +5,10 @@ const program = require("commander");
 const apigen = require("./apigen");
 const file = require("./output")
 
+const package = require("../package.json");
+
 program
-  .version("0.0.32",'-v,--version')
+  .version(package.version,'-v,--version')
   .command("get [url]")
   .description("get axios vue api from swagger.json")
   .action(async function(url,program) {

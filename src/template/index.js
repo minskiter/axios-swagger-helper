@@ -10,6 +10,7 @@ axios.interceptors.request.use(
     ) {
       let formData = new FormData();
       for (let item in config.data) {
+        if (config.data[item])
         if (
           typeof config.data[item] == "object" &&
           config.data[item].length > 0

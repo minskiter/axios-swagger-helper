@@ -1,9 +1,10 @@
 ### Open Api 3.0 Auto Gen Js Axios Client Code
 
 #### INSTALL
-
+``` sh
 yarn global add axios-swagger-helper
-or npm install -g axios-swagger-helper
+# npm install -g axios-swagger-helper
+```
 
 #### USAGE
 
