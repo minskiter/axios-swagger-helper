@@ -1,9 +1,6 @@
 const docsHelper = require("./docs");
 const loger = require("./log");
-const path = require("path");
 const render = require("./render");
-const fs = require("fs");
-const uppercamelcase = require("uppercamelcase");
 
 let apis = {};
 
@@ -57,7 +54,7 @@ async function decode(docs) {
               let rgx = new RegExp("\\'\\+" + parm.name + "\\+\\'", "gi");
               api.path = api.path.replace(
                 rgx,
-                "'+" + uppercamelcase(parm.name) + "+'"
+                "'+" + parm.name.toLowerCase() + "+'"
               );
               let lowerRex = new RegExp(
                 "\\'\\+" + parm.name.toLowerCase() + "\\+\\'",
@@ -65,11 +62,11 @@ async function decode(docs) {
               );
               api.path = api.path.replace(
                 lowerRex,
-                "'+" + uppercamelcase(parm.name) + "+'"
+                "'+" + parm.name.toLowerCase() + "+'"
               );
               api.path = api.path.replace(
-                "'+" + uppercamelcase(parm.name) + "+'",
-                "'+" + uppercamelcase("Path" + parm.name) + "+'"
+                "'+" + parm.name.toLowerCase() + "+'",
+                "'+" + ("Path" + parm.name).toLowerCase() + "+'"
               );
               parm.name = "Path" + parm.name;
               api.parameters.push(parm);
@@ -177,7 +174,7 @@ async function gen(apis) {
           "  * @param {" +
             item.type +
             "} [" +
-            uppercamelcase(item.name) +
+            item.name.toLowerCase() +
             "] " +
             item.summary
         );
@@ -185,17 +182,17 @@ async function gen(apis) {
       comment = comment.join("\n");
       let paramsName = [];
       for (let index in action.parameters) {
-        paramsName.push(uppercamelcase(action.parameters[index].name));
+        paramsName.push((action.parameters[index].name).split(".").slice(-1)[0].toLowerCase());
       }
       paramsName = paramsName.join(",");
       let dataName = [];
       for (let index in action.data) {
-        dataName.push(uppercamelcase(action.data[index].name));
+        dataName.push((action.data[index].name).split(".").slice(-1)[0].toLowerCase().toLowerCase());
       }
       dataName = dataName.join(",");
       let queryName = [];
       for (let index in action.query) {
-        queryName.push(uppercamelcase(action.query[index].name));
+        queryName.push((action.query[index].name).split(".").slice(-1)[0].toLowerCase().toLowerCase());
       }
       let apiT = render(actionT, {
         comment,
