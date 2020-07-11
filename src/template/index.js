@@ -13,9 +13,13 @@ axios.interceptors.request.use(
         if (config.data[item])
         if (
           typeof config.data[item] == "object" &&
-          config.data[item].length > 0
-        )
-          for (let i of config.data[item]) formData.append(item, i);
+          Array.isArray(config.data[item])
+        ){  
+          for (let index in config.data[item]){
+              let i = config.data[item][index];
+              formData.append(item+'['+index+']',i);
+          }
+        }
         else formData.append(item, config.data[item]);
       }
       config.data = formData;
