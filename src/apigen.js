@@ -182,17 +182,30 @@ async function gen(apis) {
       comment = comment.join("\n");
       let paramsName = [];
       for (let index in action.parameters) {
-        paramsName.push((action.parameters[index].name).split(".").slice(-1)[0].toLowerCase());
+        // decode complex object
+        if (action.parameters[index].name.indexOf('.')!=-1){
+            let tempPara = (action.parameters[index].name).split('.').slice()[0].toLowerCase();
+            if (paramsName.indexOf(tempPara)!=-1) continue; 
+        }
+        paramsName.push((action.parameters[index].name).split('.').slice()[0].toLowerCase());
       }
       paramsName = paramsName.join(",");
       let dataName = [];
       for (let index in action.data) {
-        dataName.push((action.data[index].name).split(".").slice(-1)[0].toLowerCase().toLowerCase());
+        if (action.data[index].name.indexOf('.')!=-1){
+            let tempPara = (action.data[index].name).split('.').slice()[0].toLowerCase();
+            if (dataName.indexOf(tempPara)!=-1) continue; 
+        }
+        dataName.push((action.data[index].name).split(".").slice()[0].toLowerCase().toLowerCase());
       }
       dataName = dataName.join(",");
       let queryName = [];
       for (let index in action.query) {
-        queryName.push((action.query[index].name).split(".").slice(-1)[0].toLowerCase().toLowerCase());
+        if (action.query[index].name.indexOf('.')!=-1){
+            let tempPara = (action.query[index].name).split('.').slice()[0].toLowerCase();
+            if (queryName.indexOf(tempPara)!=-1) continue; 
+        }
+        queryName.push((action.query[index].name).split(".").slice()[0].toLowerCase().toLowerCase());
       }
       let apiT = render(actionT, {
         comment,
