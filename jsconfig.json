@@ -4,7 +4,7 @@
     "module":"commonjs"
   },
   "include": [
-    "api"
+    "src"
   ],
   "exclude": [
     "node_modules"

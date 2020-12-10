@@ -8,7 +8,6 @@
   "license": "MIT",
   "private": false,
   "scripts": {
-    "git": "git add -A && git commit -m '[update]' && git push",
     "dev": "node ./src/index.js",
     "clean": "rm ./api.js",
     "babel": "babel-node"

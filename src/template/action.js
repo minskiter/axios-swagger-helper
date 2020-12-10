@@ -1,8 +1,8 @@
-module.exports = `  
+module.exports = ` 
   /**
 {{comment}}
   */
-  static async {{methodName}}({{paramsName}}){
+  static async {{methodName}}({{paramsName}}cancelSource){
     return await new Promise((resolve,reject)=>{
       let responseType = "{{responseType}}";
       let options = {
@@ -12,7 +12,8 @@ module.exports = `
         params:{{{queryName}}},
         headers:{
           "Content-Type":"{{contentType}}"
-        }
+        },
+        cancelToken:cancelSource?.token
       }
       if (responseType != "json"){
         options.responseType = responseType;

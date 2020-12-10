@@ -1,5 +1,5 @@
 module.exports = `/* eslint-disable */
-// Auto Scripts G Don't Edit
+// More information: https://github.com/minskiter/openapijs
 import axios from './axios'
 
 axios.interceptors.request.use(
