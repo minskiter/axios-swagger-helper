@@ -1,6 +1,6 @@
 {
   "name": "axios-swagger-helper",
-  "version": "0.0.36",
+  "version": "0.0.37",
   "description": "swagger.json 自动生成axios 示例，实现自动化生成，并支持前后对比，节省前端写api代码的时间",
   "main": "index.js",
   "repository": "https://github.com/minskiter/openapijs.git",
@@ -39,6 +39,7 @@
     "@babel/node": "^7.7.4",
     "@babel/preset-env": "^7.7.6",
     "@types/node": "^13.1.2",
+    "jest": "^26.6.3",
     "source-map": "^0.7.3"
   }
 }
