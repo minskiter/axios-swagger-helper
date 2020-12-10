@@ -17,7 +17,7 @@ yarn add -D axios-swagger-helper
 package.json
 ``` json
 {
-    "script":{
+    "scripts":{
         "api":"api-cli get https://example.com/swagger/v1/swagger.json -d ./api"
     }
 }

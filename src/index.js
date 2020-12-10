@@ -17,11 +17,13 @@ program
             process.exit(1);
         }
         let content = await apigen(url);
-        let dir = program.Dir || "./";
-        file.save(dir, "api.js", content);
-        if (!await file.exist(dir, "axios.js")) {
-            axios = require('./template/axios.js')
-            file.save(dir, "axios.js", axios);
+        if (content) {
+            let dir = program.Dir || "./";
+            file.save(dir, "api.js", content);
+            if (!await file.exist(dir, "axios.js")) {
+                axios = require('./template/axios.js')
+                file.save(dir, "axios.js", axios);
+            }
         }
     }).option('-d,-dir [path]', 'custom dir path');
 

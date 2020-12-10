@@ -241,6 +241,12 @@ async function gen(apis) {
 
 module.exports = async function (url) {
     let docs = await docsHelper.getDocs(url);
-    await decode(docs);
-    return await gen(apis);
+    // 判断是否为openapijs 3.0版本，否则提示错误不支持
+    if (docs.openapi && parseInt(docs.openapi.split('.')[0]) == 3) {
+        await decode(docs);
+        return await gen(apis);
+    }else{
+        loger.error("Only Support Open Api 3.0+")
+        process.exit(1)
+    }
 };
