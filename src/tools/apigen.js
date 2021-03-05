@@ -1,10 +1,11 @@
-const docsHelper = require("./docs");
-const loger = require("./log");
-const render = require("./render");
+const loger = require("../log");
+const render = require("../render");
+const jsType = require("./swaggerType")
+const contentType = require("./contentType")
 
 let apis = {};
 
-async function decode(docs) {
+function decode(docs) {
     let paths = docs.paths;
     if (paths) {
         for (let path in paths) {
@@ -43,7 +44,7 @@ async function decode(docs) {
                         let parameter = json.parameters[key];
                         let parm = {
                             name: parameter.name,
-                            type: parameter.schema ? parameter.schema.type : "object",
+                            type: parameter.schema ? jsType[parameter.schema.type] : "",
                             summary: parameter.description ? parameter.description : "",
                         };
 
@@ -79,7 +80,7 @@ async function decode(docs) {
                     if (!parameter) continue;
                     for (let content in parameter) {
                         let item = parameter[content];
-                        if (content == "multipart/form-data") {
+                        if (content == contentType.form.formData) {
                             api.contentType = content;
                             let parameter = item.schema;
                             if (!parameter) continue;
@@ -88,39 +89,32 @@ async function decode(docs) {
                             for (let item in parameter) {
                                 let parm = {
                                     name: item,
-                                    type: parameter[item].type ? parameter[item].type : "object",
+                                    type: parameter[item].type ? jsType[parameter[item].type] : "",
                                     summary: parameter[item].description
                                         ? parameter[item].description
-                                        : "",
+                                        : ""
                                 };
                                 api.parameters.push(parm);
                                 api.data.push(parm);
                             }
-                        } else if (content == "application/json") {
+                        } else if (content == contentType.application.json) {
                             api.contentType = content;
                             let parameter = item.schema;
-
+                            let typeName = "";
                             // 如果是个对象
-                            let ref = parameter.$ref.split("/");
-                            parameter = docs;
-                            for (let index in ref) {
-                                let key = ref[index];
-                                if (key != "#") parameter = parameter[key];
-                            }
-
-                            parameter = parameter.properties;
-                            if (!parameter) continue;
-                            for (let item in parameter) {
-                                let parm = {
-                                    name: item,
-                                    type: parameter[item].type ? parameter[item].type : "object",
-                                    summary: parameter[item].description
-                                        ? parameter[item].description
-                                        : "",
-                                };
-                                api.parameters.push(parm);
-                                api.data.push(parm);
-                            }
+                            if (parameter.$ref)
+                                typeName = parameter.$ref.split("/").slice(-1)[0];
+                            else
+                                typeName = parameter.type
+                            let parm = {
+                                name: parameter.name ? parameter.name : typeName.toLowerCase(),
+                                type: typeName,
+                                summary: parameter.description
+                                    ? parameter.description
+                                    : "",
+                            };
+                            api.parameters.push(parm);
+                            api.data.push(parm);
                         } else {
                             continue;
                         }
@@ -154,12 +148,13 @@ async function decode(docs) {
     }
 }
 
-const actionT = require("./template/action");
-const classT = require("./template/class");
-const indexT = require("./template/index");
+const actionT = require("../template/action");
+const classT = require("../template/class");
+const indexT = require("../template/index");
+const models = require("./schemaImport");
 
-async function gen(apis) {
-    let apiContent = [indexT];
+function gen(apis,index) {
+    let apiContent = [index];
     for (let className in apis) {
         let functions = [];
         let controller = apis[className];
@@ -168,7 +163,7 @@ async function gen(apis) {
             let action = controller[methodName];
             // 构造Action请求的注释
             let comment = [];
-            comment.push("  * @summary " + action.summary);
+            comment.push("  * @summary " + (action.summary ? action.summary : ""));
             for (let index in action.parameters) {
                 let item = action.parameters[index];
                 comment.push(
@@ -181,7 +176,7 @@ async function gen(apis) {
                 );
             }
             // 注释SourceToken
-            comment.push(`  * @param {object} [cancelSource] Axios Cancel Source 对象，可以取消该请求`)
+            comment.push(`  * @param {CancelTokenSource} [cancelSource] Axios Cancel Source 对象，可以取消该请求`)
             comment = comment.join("\n");
             // 构造参数名
             let paramsName = [];
@@ -206,6 +201,9 @@ async function gen(apis) {
                 dataName.push((action.data[index].name).split(".").slice()[0].toLowerCase().toLowerCase());
             }
             dataName = dataName.join(",");
+            if (action.contentType != contentType.application.json) {
+                dataName = `{${dataName}}`
+            }
             let queryName = [];
             for (let index in action.query) {
                 if (action.query[index].name.indexOf('.') != -1) {
@@ -239,13 +237,12 @@ async function gen(apis) {
     return apiContent;
 }
 
-module.exports = async function (url) {
-    let docs = await docsHelper.getDocs(url);
+module.exports = function (docs) {
     // 判断是否为openapijs 3.0版本，否则提示错误不支持
     if (docs.openapi && parseInt(docs.openapi.split('.')[0]) == 3) {
-        await decode(docs);
-        return await gen(apis);
-    }else{
+        decode(docs);
+        return gen(apis, render(indexT, { models: models(docs) }));
+    } else {
         loger.error("Only Support Open Api 3.0+")
         process.exit(1)
     }

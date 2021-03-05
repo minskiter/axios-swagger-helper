@@ -8,7 +8,7 @@ module.exports = `
       let options = {
         method:'{{method}}',
         url:'{{url}}',
-        data:{{{dataName}}},
+        data:{{dataName}},
         params:{{{queryName}}},
         headers:{
           "Content-Type":"{{contentType}}"

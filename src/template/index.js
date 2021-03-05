@@ -1,6 +1,8 @@
 module.exports = `/* eslint-disable */
 // More information: https://github.com/minskiter/openapijs
-import axios from './axios'
+import axios from './config'
+import {CancelTokenSource} from 'axios'
+{{models}}
 
 axios.interceptors.request.use(
   config => {
@@ -17,7 +19,7 @@ axios.interceptors.request.use(
         ){  
           for (let index in config.data[item]){
               let i = config.data[item][index];
-              formData.append(item+'['+index+']',i);
+              formData.append(item,i);
           }
         }
         else formData.append(item, config.data[item]);
