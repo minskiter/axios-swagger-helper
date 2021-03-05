@@ -255,7 +255,7 @@ something decode fail...
 [image]
 
 #### CHANGE LOG
-[2020-3-5]  
+[2021-3-5]  v0.0.41
 1. Add model classes file
 2. Rename axios.js config.js
 3. Add import models resolve 
