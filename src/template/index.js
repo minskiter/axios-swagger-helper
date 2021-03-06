@@ -1,8 +1,8 @@
 module.exports = `/* eslint-disable */
 // More information: https://github.com/minskiter/openapijs
-import axios from './config'
+import axios from './config.js'
 import {CancelTokenSource} from 'axios'
-{{models}}
+import * as UserModel from './model.js'
 
 axios.interceptors.request.use(
   config => {

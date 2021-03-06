@@ -108,7 +108,7 @@ function decode(docs) {
                                 typeName = parameter.type
                             let parm = {
                                 name: parameter.name ? parameter.name : typeName.toLowerCase(),
-                                type: typeName,
+                                type: parameter.$ref ? `UserModel.${typeName}` : typeName,
                                 summary: parameter.description
                                     ? parameter.description
                                     : "",
@@ -151,9 +151,8 @@ function decode(docs) {
 const actionT = require("../template/action");
 const classT = require("../template/class");
 const indexT = require("../template/index");
-const models = require("./schemaImport");
 
-function gen(apis,index) {
+function gen(apis, index) {
     let apiContent = [index];
     for (let className in apis) {
         let functions = [];
@@ -241,7 +240,7 @@ module.exports = function (docs) {
     // 判断是否为openapijs 3.0版本，否则提示错误不支持
     if (docs.openapi && parseInt(docs.openapi.split('.')[0]) == 3) {
         decode(docs);
-        return gen(apis, render(indexT, { models: models(docs) }));
+        return gen(apis, indexT);
     } else {
         loger.error("Only Support Open Api 3.0+")
         process.exit(1)

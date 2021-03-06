@@ -56,9 +56,9 @@ api.js
 ``` js
 /* eslint-disable */
 // More information: https://github.com/minskiter/openapijs
-import axios from './config'
+import axios from './config.js'
 import {CancelTokenSource} from 'axios'
-import {WeatherForecast,Query} from './model.js'
+import * as UserModel from './model.js'
 
 
 axios.interceptors.request.use(
@@ -172,7 +172,7 @@ export class WeatherForecast {
  
   /**
   * @summary 
-  * @param {Query} [query] 
+  * @param {UserModel.Query} [query] 
   * @param {CancelTokenSource} [cancelSource] Axios Cancel Source 对象，可以取消该请求
   */
   static async PostTest(query,cancelSource){
@@ -255,6 +255,9 @@ something decode fail...
 [image]
 
 #### CHANGE LOG
+[2021-3-6]  v0.0.42
+1. Import userModel 
+2. Format parameter type {userModel.*}
 [2021-3-5]  v0.0.41
 1. Add model classes file
 2. Rename axios.js config.js

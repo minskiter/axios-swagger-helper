@@ -1,15 +1,15 @@
 'use strict'
 
 const classT = require("../template/class");
-let render = require("../render")
+const render = require("../render")
+const jsType = require("./swaggerType")
 
 const propertyT = `   
     /**
      * {{summary}}
      * @type {{{type}}}
      */
-    {{name}}={{value}}
-`;
+    {{name}}={{value}}`;
 
 const defaultValue = {
     string: `undefine`,
@@ -17,52 +17,51 @@ const defaultValue = {
     integer: `undefine`
 }
 
-const jsType = require("./swaggerType")
+const paramsT = `     * @param {{{type}}} {{name}} {{summary}}`
 
-let typeSet = new Set();
 
-// "StringStringValuesKeyValuePair": {
-//     "type": "object",
-//     "properties": {
-//         "key": {
-//             "type": "string",
-//             "nullable": true,
-//             "readOnly": true
-//         },
-//         "value": {
-//             "type": "array",
-//             "items": {
-//                 "type": "string"
-//             },
-//             "readOnly": true
-//         }
-//     },
-//     "additionalProperties": false
-// },
 function schemaGen(schema) {
     let props = "";
+    let constructFunc = []
+    let assigns = []
+    let params = []
     if (schema.type && schema.type == "object") {
         for (let propertyName in schema.properties) {
+            constructFunc.push(`${propertyName} = undefine`)
+            assigns.push(`this.${propertyName} = ${propertyName}`)
             let property = schema.properties[propertyName]
             if (property.type) {
-                props += render(propertyT, {
+                let obj = {
                     type: jsType[property.type],
                     summary: property.description == null ? "" : property.description,
                     name: propertyName,
                     value: defaultValue[property.type]
-                })
+                }
+                props += render(propertyT, obj)
+                params.push(render(paramsT, obj))
             } else if (property.$ref) {
                 let className = property.$ref.split("/").slice(-1)[0]
-                props += render(propertyT, {
+                let obj = {
                     type: className,
                     summary: "",
                     name: propertyName,
-                    value: `{}`
-                })
+                    value: `undefine`
+                }
+                props += render(propertyT, obj)
+                params.push(render(paramsT, obj))
             }
         }
     }
-    return props
+    return `
+    /**
+     *
+${params.join("\n")}
+     */ 
+    constructor(${constructFunc.join(",")}){
+        ${assigns.join("\n        ")}
+    }
+    ${props}
+    `
 }
 
 function schemaResolver(docs) {
