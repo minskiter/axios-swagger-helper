@@ -12,9 +12,9 @@ const propertyT = `
     {{name}}={{value}}`;
 
 const defaultValue = {
-    string: `undefine`,
-    array: `undefine`,
-    integer: `undefine`
+    string: `undefined`,
+    array: `undefined`,
+    integer: `undefined`
 }
 
 const paramsT = `     * @param {{{type}}} {{name}} {{summary}}`
@@ -27,7 +27,7 @@ function schemaGen(schema) {
     let params = []
     if (schema.type && schema.type == "object") {
         for (let propertyName in schema.properties) {
-            constructFunc.push(`${propertyName} = undefine`)
+            constructFunc.push(`${propertyName} = undefined`)
             assigns.push(`this.${propertyName} = ${propertyName}`)
             let property = schema.properties[propertyName]
             if (property.type) {
@@ -45,7 +45,7 @@ function schemaGen(schema) {
                     type: className,
                     summary: "",
                     name: propertyName,
-                    value: `undefine`
+                    value: `undefined`
                 }
                 props += render(propertyT, obj)
                 params.push(render(paramsT, obj))
