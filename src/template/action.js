@@ -2,7 +2,7 @@ module.exports = `
   /**
 {{comment}}
   */
-  static async {{methodName}}({{paramsName}}cancelSource){
+  static async {{methodName}}({{paramsName}}cancelSource,uploadProgress,downloadProgress){
     return await new Promise((resolve,reject)=>{
       let responseType = "{{responseType}}";
       let options = {
@@ -13,7 +13,9 @@ module.exports = `
         headers:{
           "Content-Type":"{{contentType}}"
         },
-        cancelToken:cancelSource?.token
+        cancelToken:cancelSource?.token,
+        onUploadProgress:uploadProgress,
+        onDownloadProgress:downloadProgress
       }
       if (responseType != "json"){
         options.responseType = responseType;

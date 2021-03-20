@@ -14,25 +14,25 @@ export class WeatherForecast {
      * 
      * @type {String}
      */
-    date=undefine
+    date=undefined
    
     /**
      * 
      * @type {Number}
      */
-    temperatureC=undefine
+    temperatureC=undefined
    
     /**
      * 
      * @type {Number}
      */
-    temperatureF=undefine
+    temperatureF=undefined
    
     /**
      * 
      * @type {String}
      */
-    summary=undefine
+    summary=undefined
 
 }
 export class Query {
@@ -41,13 +41,13 @@ export class Query {
      * 
      * @type {Number}
      */
-    page=undefine
+    page=undefined
    
     /**
      * 
      * @type {Number}
      */
-    size=undefine
+    size=undefined
 
 }
 
@@ -255,10 +255,13 @@ something decode fail...
 [image]
 
 #### CHANGE LOG
-[2021-3-6]  v0.0.42
+[2021-3-20] v0.0.44  
+1. UploadProgress Callback Function
+2. DownloadProgress Callback Function  
+[2021-3-6]  v0.0.42  
 1. Import userModel 
-2. Format parameter type {userModel.*}
-[2021-3-5]  v0.0.41
+2. Format parameter type {userModel.*}  
+[2021-3-5]  v0.0.41  
 1. Add model classes file
 2. Rename axios.js config.js
 3. Add import models resolve 
