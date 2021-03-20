@@ -176,6 +176,8 @@ function gen(apis, index) {
             }
             // 注释SourceToken
             comment.push(`  * @param {CancelTokenSource} [cancelSource] Axios Cancel Source 对象，可以取消该请求`)
+            comment.push(`  * @param {Function} [uploadProgress] 上传回调函数`)
+            comment.push(`  * @param {Function} [downloadProgress] 下载回调函数`)
             comment = comment.join("\n");
             // 构造参数名
             let paramsName = [];
