@@ -218,7 +218,10 @@ function gen(apis, index) {
           dataName = `{${dataName}}`
         }
       } else {
-        dataName = `body`
+        if (action.parameters.findIndex(e=>e.name=="body")!=-1)
+          dataName = `body`
+        else
+          dataName = "{}"
       }
 
       let queryName = [];
