@@ -248,7 +248,7 @@ function gen(apis, index) {
       functionProperties.push(render(`/**
 * @description {{methodName}} url链接，包含baseURL
 */
-{{className}}.{{methodName}}.fullPath=\`\${ax.defaults.baseURL}{{url}}\``, { className, methodName, url: action.path }))
+{{className}}.{{methodName}}.fullPath=\`\${axios.defaults.baseURL}{{url}}\``, { className, methodName, url: action.path }))
       functionProperties.push(render(`/**
 * @description {{methodName}} url链接，不包含baseURL
 */
