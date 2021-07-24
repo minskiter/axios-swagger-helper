@@ -1,6 +1,6 @@
 'use strict'
 
-const classT = require("../template/class");
+const classT = require("../template/model");
 const render = require("../render")
 const jsType = require("./swaggerType")
 
@@ -70,7 +70,7 @@ function schemaResolver(docs) {
         let schema = docs.components.schemas[schemaName]
         classes[schemaName] = render(classT, {
             className: schemaName,
-            functions: schemaGen(schema)
+            functions: schemaGen(schema),
         })
     }
     var content = ""
