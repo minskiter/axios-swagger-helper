@@ -167,6 +167,7 @@ function gen(apis, index) {
   let apiContent = [index];
   for (let className in apis) {
     let functions = [];
+    let functionProperties = [];
     let controller = apis[className];
     for (let methodName in controller) {
       loger.info((className + "." + methodName).green);
@@ -218,7 +219,7 @@ function gen(apis, index) {
           dataName = `{${dataName}}`
         }
       } else {
-        if (action.parameters.findIndex(e=>e.name=="body")!=-1)
+        if (action.parameters.findIndex(e => e.name == "body") != -1)
           dataName = `body`
         else
           dataName = "{}"
@@ -243,13 +244,20 @@ function gen(apis, index) {
         contentType: action.contentType,
         responseType: action.responseType,
       });
+      // url property
+      functionProperties.push(render(`/**
+* @description {{methodName}} url链接，不包含domain
+*/
+{{className}}.{{methodName}}.url='{{url}}'`, { className, methodName, url: action.path }))
       functions.push(apiT);
     }
     functions = functions.join("\n");
+    functionProperties = functionProperties.join("\n");
     apiContent.push(
       render(classT, {
         className,
         functions,
+        classMethodProperties: functionProperties
       })
     );
   }
