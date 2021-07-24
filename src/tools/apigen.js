@@ -20,6 +20,7 @@ function decode(docs) {
           apis[className] = {};
         }
         let api = {
+          originPath: path,
           path: path.replace(/{/g, "'+").replace(/}/g, "+'"),
           method: method,
           query: [],
@@ -248,11 +249,11 @@ function gen(apis, index) {
       functionProperties.push(render(`/**
 * @description {{methodName}} url链接，包含baseURL
 */
-{{className}}.{{methodName}}.fullPath=\`\${axios.defaults.baseURL}{{url}}\``, { className, methodName, url: action.path }))
+{{className}}.{{methodName}}.fullPath=\`\${axios.defaults.baseURL}{{url}}\``, { className, methodName, url: action.originPath }))
       functionProperties.push(render(`/**
 * @description {{methodName}} url链接，不包含baseURL
 */
-{{className}}.{{methodName}}.path=\`{{url}}\``, { className, methodName, url: action.path }))
+{{className}}.{{methodName}}.path=\`{{url}}\``, { className, methodName, url: action.originPath }))
       functions.push(apiT);
     }
     functions = functions.join("\n");
