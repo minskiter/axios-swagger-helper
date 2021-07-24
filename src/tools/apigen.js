@@ -246,9 +246,13 @@ function gen(apis, index) {
       });
       // url property
       functionProperties.push(render(`/**
-* @description {{methodName}} url链接，不包含domain
+* @description {{methodName}} url链接，包含baseURL
 */
-{{className}}.{{methodName}}.url='{{url}}'`, { className, methodName, url: action.path }))
+{{className}}.{{methodName}}.fullPath=\`\${ax.defaults.baseURL}{{url}}\``, { className, methodName, url: action.path }))
+      functionProperties.push(render(`/**
+* @description {{methodName}} url链接，不包含baseURL
+*/
+{{className}}.{{methodName}}.path=\`{{url}}\``, { className, methodName, url: action.path }))
       functions.push(apiT);
     }
     functions = functions.join("\n");
