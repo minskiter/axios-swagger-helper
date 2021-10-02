@@ -5,212 +5,26 @@
 
 #### What is axios-swagger-helper?
 1. Automatically export from swagger.json(OPEN API 3)
-2. Example of exported file
-model.js
-``` js
-export class WeatherForecast {
-   
-    /**
-     * 
-     * @type {String}
-     */
-    date=undefined
-   
-    /**
-     * 
-     * @type {Number}
-     */
-    temperatureC=undefined
-   
-    /**
-     * 
-     * @type {Number}
-     */
-    temperatureF=undefined
-   
-    /**
-     * 
-     * @type {String}
-     */
-    summary=undefined
 
-}
-export class Query {
-   
-    /**
-     * 
-     * @type {Number}
-     */
-    page=undefined
-   
-    /**
-     * 
-     * @type {Number}
-     */
-    size=undefined
+2. The example of file:
 
-}
+   - dir
 
-```
-api.js
-``` js
-/* eslint-disable */
-// More information: https://github.com/minskiter/openapijs
-import axios from './config.js'
-import {CancelTokenSource} from 'axios'
-import * as UserModel from './model.js'
+     ![image](https://z3.ax1x.com/2021/10/02/4bbt2T.png)
 
+   - api file (auto generate)
 
-axios.interceptors.request.use(
-  config => {
-    if (
-      config.headers["Content-Type"].includes("x-www-form-urlencoded") ||
-      config.headers["Content-Type"].includes("multipart/form-data")
-    ) {
-      let formData = new FormData();
-      for (let item in config.data) {
-        if (config.data[item])
-        if (
-          typeof config.data[item] == "object" &&
-          Array.isArray(config.data[item])
-        ){  
-          for (let index in config.data[item]){
-              let i = config.data[item][index];
-              formData.append(item,i);
-          }
-        }
-        else formData.append(item, config.data[item]);
-      }
-      config.data = formData;
-    }
-    return config;
-  },
-  error=>{
-    return Promise.reject(error)
-  }
-)
-export class WeatherForecast {
- 
-  /**
-  * @summary 
-  * @param {CancelTokenSource} [cancelSource] Axios Cancel Source 对象，可以取消该请求
-  */
-  static async Get(cancelSource){
-    return await new Promise((resolve,reject)=>{
-      let responseType = "text";
-      let options = {
-        method:'get',
-        url:'/WeatherForecast',
-        data:{},
-        params:{},
-        headers:{
-          "Content-Type":""
-        },
-        cancelToken:cancelSource?.token
-      }
-      if (responseType != "json"){
-        options.responseType = responseType;
-      }
-      axios(options)
-      .then(res=>{
-        if (res.config.responseType=="blob"){
-          resolve(new Blob([res.data],{
-            type: res.headers["content-type"].split(";")[0]
-          }))
-        }else{
-          resolve(res.data);
-          return res.data
-        }
-      }).catch(err=>{
-        if (err.response.data)
-          reject(err.response.data)
-        else
-          reject(err.response);
-      })
-    })
-  }
- 
-  /**
-  * @summary 
-  * @param {String} [file] 
-  * @param {CancelTokenSource} [cancelSource] Axios Cancel Source 对象，可以取消该请求
-  */
-  static async GetFileName(file,cancelSource){
-    return await new Promise((resolve,reject)=>{
-      let responseType = "json";
-      let options = {
-        method:'post',
-        url:'/WeatherForecast',
-        data:{file},
-        params:{},
-        headers:{
-          "Content-Type":"multipart/form-data"
-        },
-        cancelToken:cancelSource?.token
-      }
-      if (responseType != "json"){
-        options.responseType = responseType;
-      }
-      axios(options)
-      .then(res=>{
-        if (res.config.responseType=="blob"){
-          resolve(new Blob([res.data],{
-            type: res.headers["content-type"].split(";")[0]
-          }))
-        }else{
-          resolve(res.data);
-          return res.data
-        }
-      }).catch(err=>{
-        if (err.response.data)
-          reject(err.response.data)
-        else
-          reject(err.response);
-      })
-    })
-  }
- 
-  /**
-  * @summary 
-  * @param {UserModel.Query} [query] 
-  * @param {CancelTokenSource} [cancelSource] Axios Cancel Source 对象，可以取消该请求
-  */
-  static async PostTest(query,cancelSource){
-    return await new Promise((resolve,reject)=>{
-      let responseType = "json";
-      let options = {
-        method:'post',
-        url:'/WeatherForecast/test',
-        data:query,
-        params:{},
-        headers:{
-          "Content-Type":"application/json"
-        },
-        cancelToken:cancelSource?.token
-      }
-      if (responseType != "json"){
-        options.responseType = responseType;
-      }
-      axios(options)
-      .then(res=>{
-        if (res.config.responseType=="blob"){
-          resolve(new Blob([res.data],{
-            type: res.headers["content-type"].split(";")[0]
-          }))
-        }else{
-          resolve(res.data);
-          return res.data
-        }
-      }).catch(err=>{
-        if (err.response.data)
-          reject(err.response.data)
-        else
-          reject(err.response);
-      })
-    })
-  }
-}
-```
+   ![Snipaste 2021 10 02 21 31 59](https://z3.ax1x.com/2021/10/02/4bb1Vs.png)
+
+   - custom config(config.js)
+
+     ![image](https://z3.ax1x.com/2021/10/02/4bbDaR.png)
+
+   - global types(Vue):
+
+     ![image](https://z3.ax1x.com/2021/10/02/4bbOsg.png)
+
+     
 
 #### INSTALL
 ``` sh
@@ -247,22 +61,30 @@ api-cli get {url} -d {output_dir}
 
 #### Issues
 
-Template:
-[Swagger Docs Url]: http://localhost:5000/swagger/v1/swagger.json
+> Template:
+>
+> [Swagger Docs Url]: http://localhost:5000/swagger/v1/swagger.json
+>
+> Problem: 
+> something decode fail...
+> [image]
 
-Problem: 
-something decode fail...
-[image]
+#### CHANGE LOG  
 
-#### CHANGE LOG
-[2021-3-20] v0.0.44  
-1. UploadProgress Callback Function
-2. DownloadProgress Callback Function  
-[2021-3-6]  v0.0.42  
-1. Import userModel 
-2. Format parameter type {userModel.*}  
-[2021-3-5]  v0.0.41  
-1. Add model classes file
-2. Rename axios.js config.js
-3. Add import models resolve 
-4. [Update Warning] Model.js will change the old parameters, please use the class instead
+> [2021-3-20] v0.0.44
+>
+> 1. UploadProgress Callback Function  
+> 2. DownloadProgress Callback Function  
+>
+> [2021-3-6]  v0.0.42  
+>
+> 1. Import userModel  
+> 2. Format parameter type {userModel.*}   
+>
+> [2021-3-5]  v0.0.41   
+>
+> 1. Add model classes file
+> 2. Rename axios.js config.js
+> 3. Add import models resolve 
+> 4. [Update Warning] Model.js will change the old parameters, please use the class instead
+
