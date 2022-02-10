@@ -13,9 +13,12 @@ module.exports = `
         headers:{
           "Content-Type":"{{contentType}}"
         },
-        cancelToken:cancelSource?.token,
         onUploadProgress:uploadProgress,
         onDownloadProgress:downloadProgress
+      }
+      // support wechat mini program
+      if (cancelSource!=undefined){
+        options.cancelToken = cancelSource.token
       }
       if (responseType != "json"){
         options.responseType = responseType;
