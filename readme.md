@@ -1,3 +1,6 @@
+# This repository is no longer maintained
+see typescript https://github.com/minskiter/auto-openapi 
+
 ### Open Api 3.0 Auto Gen Js Axios Client Code
 
 ![](https://img.shields.io/npm/v/axios-swagger-helper?style=flat-square)
