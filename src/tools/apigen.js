@@ -85,18 +85,33 @@ function decode(docs) {
               api.contentType = content;
               let parameter = item.schema;
               if (!parameter) continue;
-              parameter = parameter.properties;
-              if (!parameter) continue;
-              for (let item in parameter) {
-                let parm = {
-                  name: item,
-                  type: parameter[item].type ? jsType[parameter[item].type] : "",
-                  summary: parameter[item].description
-                    ? parameter[item].description
-                    : ""
-                };
-                api.parameters.push(parm);
-                api.data.push(parm);
+              if (parameter.$ref){
+                let typeName = parameter.$ref.split("/").slice(-1)[0];
+                if (typeName){
+                  let parm = {
+                    name: parameter.name ? parameter.name : typeName.toLowerCase(),
+                    type: parameter.$ref ? `UserModel.${typeName}` : typeName,
+                    summary: parameter.description
+                      ? parameter.description
+                      : "",
+                  };
+                  api.parameters.push(parm);
+                  api.data.push(parm);
+                }
+              }else{
+                parameter = parameter.properties;
+                if (!parameter) continue;
+                for (let item in parameter) {
+                  let parm = {
+                    name: item,
+                    type: parameter[item].type ? jsType[parameter[item].type] : "",
+                    summary: parameter[item].description
+                      ? parameter[item].description
+                      : ""
+                  };
+                  api.parameters.push(parm);
+                  api.data.push(parm);
+                }
               }
             } else if (content == contentType.application.json) {
               api.contentType = content;
@@ -217,7 +232,12 @@ function gen(apis, index) {
         }
         dataName = dataName.join(",");
         if (action.contentType != contentType.application.json) {
-          dataName = `{${dataName}}`
+          
+          if ((action.contentType == contentType.form.formData || action.contentType ==contentType.application.formData) && action.data.length==1 && action.data[0].type.startsWith("UserModel")){
+
+          }else{
+            dataName = `{${dataName}}`
+          }
         }
       } else {
         if (action.parameters.findIndex(e => e.name == "body") != -1)
