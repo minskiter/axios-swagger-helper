@@ -34,10 +34,14 @@ module.exports = `
           return res.data
         }
       }).catch(err=>{
-        if (err.response.data)
-          reject(err.response.data)
-        else
-          reject(err.response);
+        if (err.response){
+          if (err.response.data)
+            reject(err.response.data)
+          else
+            reject(err.response);
+        }else{
+          reject(err)
+        }
       })
     })
   }`;
