@@ -1,7 +1,7 @@
 const loger = require("../log");
 const render = require("../render");
-const jsType = require("./swaggerType")
-const contentType = require("./contentType")
+const jsType = require("./swaggerType");
+const contentType = require("./contentType");
 
 let apis = {};
 
@@ -81,33 +81,38 @@ function decode(docs) {
           if (!parameter) continue;
           for (let content in parameter) {
             let item = parameter[content];
-            if (content == contentType.form.formData) {
+            if (
+              content == contentType.form.formData ||
+              content == contentType.application.formData
+            ) {
               api.contentType = content;
               let parameter = item.schema;
               if (!parameter) continue;
-              if (parameter.$ref){
+              if (parameter.$ref) {
                 let typeName = parameter.$ref.split("/").slice(-1)[0];
-                if (typeName){
+                if (typeName) {
                   let parm = {
-                    name: parameter.name ? parameter.name : typeName.toLowerCase(),
+                    name: parameter.name
+                      ? parameter.name
+                      : typeName.toLowerCase(),
                     type: parameter.$ref ? `UserModel.${typeName}` : typeName,
-                    summary: parameter.description
-                      ? parameter.description
-                      : "",
+                    summary: parameter.description ? parameter.description : "",
                   };
                   api.parameters.push(parm);
                   api.data.push(parm);
                 }
-              }else{
+              } else {
                 parameter = parameter.properties;
                 if (!parameter) continue;
                 for (let item in parameter) {
                   let parm = {
                     name: item,
-                    type: parameter[item].type ? jsType[parameter[item].type] : "",
+                    type: parameter[item].type
+                      ? jsType[parameter[item].type]
+                      : "",
                     summary: parameter[item].description
                       ? parameter[item].description
-                      : ""
+                      : "",
                   };
                   api.parameters.push(parm);
                   api.data.push(parm);
@@ -120,16 +125,15 @@ function decode(docs) {
               // 如果是个对象
               if (parameter.$ref)
                 typeName = parameter.$ref.split("/").slice(-1)[0];
-              else
-                typeName = parameter.type
+              else typeName = parameter.type;
               // 如果不包含参数名称，则默认传输整个body
               if (typeName) {
                 let parm = {
-                  name: parameter.name ? parameter.name : typeName.toLowerCase(),
+                  name: parameter.name
+                    ? parameter.name
+                    : typeName.toLowerCase(),
                   type: parameter.$ref ? `UserModel.${typeName}` : typeName,
-                  summary: parameter.description
-                    ? parameter.description
-                    : "",
+                  summary: parameter.description ? parameter.description : "",
                 };
                 api.parameters.push(parm);
                 api.data.push(parm);
@@ -137,10 +141,8 @@ function decode(docs) {
                 api.parameters.push({
                   name: "body",
                   type: "object",
-                  summary: parameter.description
-                    ? parameter.description
-                    : "",
-                })
+                  summary: parameter.description ? parameter.description : "",
+                });
               }
             } else {
               continue;
@@ -195,64 +197,92 @@ function gen(apis, index) {
         let item = action.parameters[index];
         comment.push(
           "  * @param {" +
-          item.type +
-          "} [" +
-          item.name.toLowerCase() +
-          "] " +
-          item.summary
+            item.type +
+            "} [" +
+            item.name.toLowerCase() +
+            "] " +
+            item.summary
         );
       }
       // 注释SourceToken
-      comment.push(`  * @param {CancelTokenSource} [cancelSource] Axios Cancel Source 对象，可以取消该请求`)
-      comment.push(`  * @param {Function} [uploadProgress] 上传回调函数`)
-      comment.push(`  * @param {Function} [downloadProgress] 下载回调函数`)
+      comment.push(
+        `  * @param {CancelTokenSource} [cancelSource] Axios Cancel Source 对象，可以取消该请求`
+      );
+      comment.push(`  * @param {Function} [uploadProgress] 上传回调函数`);
+      comment.push(`  * @param {Function} [downloadProgress] 下载回调函数`);
       comment = comment.join("\n");
       // 构造参数名
       let paramsName = [];
       for (let index in action.parameters) {
         // decode complex object 解码复杂对象
-        if (action.parameters[index].name.indexOf('.') != -1) {
-          let tempPara = (action.parameters[index].name).split('.').slice()[0].toLowerCase();
+        if (action.parameters[index].name.indexOf(".") != -1) {
+          let tempPara = action.parameters[index].name
+            .split(".")
+            .slice()[0]
+            .toLowerCase();
           if (paramsName.indexOf(tempPara) != -1) continue;
         }
-        paramsName.push((action.parameters[index].name).split('.').slice()[0].toLowerCase());
+        paramsName.push(
+          action.parameters[index].name.split(".").slice()[0].toLowerCase()
+        );
       }
       paramsName = paramsName.join(",");
-      if (paramsName.length > 0) { // 判断是否有参数，如果有参数则后面再补一个,号
+      if (paramsName.length > 0) {
+        // 判断是否有参数，如果有参数则后面再补一个,号
         paramsName += ",";
       }
       let dataName = [];
       if (action.data.length > 0) {
         for (let index in action.data) {
-          if (action.data[index].name.indexOf('.') != -1) {
-            let tempPara = (action.data[index].name).split('.').slice()[0].toLowerCase();
+          if (action.data[index].name.indexOf(".") != -1) {
+            let tempPara = action.data[index].name
+              .split(".")
+              .slice()[0]
+              .toLowerCase();
             if (dataName.indexOf(tempPara) != -1) continue;
           }
-          dataName.push((action.data[index].name).split(".").slice()[0].toLowerCase().toLowerCase());
+          dataName.push(
+            action.data[index].name
+              .split(".")
+              .slice()[0]
+              .toLowerCase()
+              .toLowerCase()
+          );
         }
         dataName = dataName.join(",");
         if (action.contentType != contentType.application.json) {
-          
-          if ((action.contentType == contentType.form.formData || action.contentType ==contentType.application.formData) && action.data.length==1 && action.data[0].type.startsWith("UserModel")){
-
-          }else{
-            dataName = `{${dataName}}`
+          if (
+            (action.contentType == contentType.form.formData ||
+              action.contentType == contentType.application.formData) &&
+            action.data.length == 1 &&
+            action.data[0].type.startsWith("UserModel")
+          ) {
+          } else {
+            dataName = `{${dataName}}`;
           }
         }
       } else {
-        if (action.parameters.findIndex(e => e.name == "body") != -1)
-          dataName = `body`
-        else
-          dataName = "{}"
+        if (action.parameters.findIndex((e) => e.name == "body") != -1)
+          dataName = `body`;
+        else dataName = "{}";
       }
 
       let queryName = [];
       for (let index in action.query) {
-        if (action.query[index].name.indexOf('.') != -1) {
-          let tempPara = (action.query[index].name).split('.').slice()[0].toLowerCase();
+        if (action.query[index].name.indexOf(".") != -1) {
+          let tempPara = action.query[index].name
+            .split(".")
+            .slice()[0]
+            .toLowerCase();
           if (queryName.indexOf(tempPara) != -1) continue;
         }
-        queryName.push((action.query[index].name).split(".").slice()[0].toLowerCase().toLowerCase());
+        queryName.push(
+          action.query[index].name
+            .split(".")
+            .slice()[0]
+            .toLowerCase()
+            .toLowerCase()
+        );
       }
       let apiT = render(actionT, {
         comment,
@@ -266,14 +296,24 @@ function gen(apis, index) {
         responseType: action.responseType,
       });
       // url property
-      functionProperties.push(render(`/**
+      functionProperties.push(
+        render(
+          `/**
 * @description {{methodName}} url链接，包含baseURL
 */
-{{className}}.{{methodName}}.fullPath=\`\${axios.defaults.baseURL}{{url}}\``, { className, methodName, url: action.originPath }))
-      functionProperties.push(render(`/**
+{{className}}.{{methodName}}.fullPath=\`\${axios.defaults.baseURL}{{url}}\``,
+          { className, methodName, url: action.originPath }
+        )
+      );
+      functionProperties.push(
+        render(
+          `/**
 * @description {{methodName}} url链接，不包含baseURL
 */
-{{className}}.{{methodName}}.path=\`{{url}}\``, { className, methodName, url: action.originPath }))
+{{className}}.{{methodName}}.path=\`{{url}}\``,
+          { className, methodName, url: action.originPath }
+        )
+      );
       functions.push(apiT);
     }
     functions = functions.join("\n");
@@ -282,7 +322,7 @@ function gen(apis, index) {
       render(classT, {
         className,
         functions,
-        classMethodProperties: functionProperties
+        classMethodProperties: functionProperties,
       })
     );
   }
@@ -292,11 +332,11 @@ function gen(apis, index) {
 
 module.exports = function (docs) {
   // 判断是否为openapijs 3.0版本，否则提示错误不支持
-  if (docs.openapi && parseInt(docs.openapi.split('.')[0]) == 3) {
+  if (docs.openapi && parseInt(docs.openapi.split(".")[0]) == 3) {
     decode(docs);
     return gen(apis, indexT);
   } else {
-    loger.error("Only Support Open Api 3.0+")
-    process.exit(1)
+    loger.error("Only Support Open Api 3.0+");
+    process.exit(1);
   }
 };
