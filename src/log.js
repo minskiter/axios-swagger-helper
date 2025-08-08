@@ -6,9 +6,9 @@ module.exports = {
         console.log("[INFO]".green, ...message);
     },
     warn: (...message) => {
-        console.warn("[WARN]".yellow, ...message[key]);
+        console.warn("[WARN]".yellow, ...message);
     },
     error: (...message) => {
-        console.error("[ERROR]".red, ...message[key]);
+        console.error("[ERROR]".red, ...message);
     }
 };
