@@ -2,7 +2,7 @@ module.exports = `
   /**
 {{comment}}
   */
-  static async {{methodName}}({{paramsName}}cancelSource,uploadProgress,downloadProgress){
+  static async {{methodName}}({{paramsName}}cancelSource,uploadProgress,downloadProgress,baseURL){
     return await new Promise((resolve,reject)=>{
       let responseType = "{{responseType}}";
       let options = {
@@ -15,6 +15,9 @@ module.exports = `
         },
         onUploadProgress:uploadProgress,
         onDownloadProgress:downloadProgress
+      }
+      if (baseURL!==undefined){
+        options.baseURL = baseURL
       }
       // support wechat mini program
       if (cancelSource!=undefined){
